@@ -8,15 +8,15 @@ env:
 phases:
   pre_build:
     commands:
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
-        docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - aws ecr get-login-password --region --region ap-south-1 |
+        docker login --username AWS --password-stdin 227764537166.dkr.ecr.--region ap-south-1.amazonaws.com
 
   build:
     commands:
       - docker build -t $ECR_REPO .
-      - docker tag $ECR_REPO:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO:latest
+      - docker tag $ECR_REPO:latest 227764537166.dkr.ecr.--region ap-south-1.amazonaws.com/$ECR_REPO:latest
 
   post_build:
     commands:
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO:latest
+      - docker push 227764537166.dkr.ecr.--region ap-south-1.amazonaws.com/$ECR_REPO:latest
 
