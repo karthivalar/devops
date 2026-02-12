@@ -16,11 +16,11 @@ phases:
   build:
     commands:
       - echo "===== DEBUG INFO ====="
-    - pwd
-    - ls -la
-    - find . -name Dockerfile
-    - echo "===== START BUILD ====="
-    - docker build --progress=plain --no-cache -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - pwd
+      - ls -la
+      - find . -name Dockerfile
+      - echo "===== START BUILD ====="
+      - docker build --progress=plain --no-cache -t $IMAGE_REPO_NAME:$IMAGE_TAG .
 
   post_build:
     commands:
