@@ -13,8 +13,7 @@ phases:
       - echo Logging in to ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
         docker login --username AWS --password-stdin \
-        $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-
+        227764537166.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app
       - echo Checking files...
       - ls -la
 
