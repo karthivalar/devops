@@ -11,26 +11,19 @@ phases:
     commands:
       - echo Logging in to ECR
       - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-      - aws ecr get-login-password --region $AWS_REGION |
-        docker login --username AWS --password-stdin \
-        227764537166.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 227764537166.dkr.ecr.ap-south-1.amazonaws.com
 
   build:
     commands:
       - echo Build Docker image
-      - docker build -t $IMAGE_REPO_NAME 
+      - docker build -t $IMAGE_REPO_NAME .
 
   post_build:
     commands:
       - echo Push image
-      - docker push \
-        227764537166.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app
-
+      - docker push $IMAGE_REPO_NAME
       - echo Update kubeconfig
-      - aws eks update-kubeconfig \
-        --region $AWS_REGION \
-        --name $CLUSTER_NAME
-
+      - aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
       - echo Deploy to EKS
       - kubectl apply -f k8s/
 
