@@ -4,7 +4,7 @@ env:
   variables:
     AWS_REGION: ap-south-1
     CLUSTER_NAME: brain-cluster
-    IMAGE_REPO_NAME: brain-app
+    IMAGE_REPO_NAME: 227764537166.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app
 
 phases:
   pre_build:
@@ -13,20 +13,18 @@ phases:
       - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
       - aws ecr get-login-password --region $AWS_REGION |
         docker login --username AWS --password-stdin \
-        $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+        227764537166.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app
 
   build:
     commands:
       - echo Build Docker image
-      - docker build -t $IMAGE_REPO_NAME .
-      - docker tag $IMAGE_REPO_NAME:latest \
-        $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
+      - docker build -t $IMAGE_REPO_NAME 
 
   post_build:
     commands:
       - echo Push image
       - docker push \
-        $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
+        227764537166.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app
 
       - echo Update kubeconfig
       - aws eks update-kubeconfig \
