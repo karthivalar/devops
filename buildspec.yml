@@ -2,31 +2,30 @@ version: 0.2
 
 env:
   variables:
-    AWS_DEFAULT_REGION: ap-south-1
-    AWS_ACCOUNT_ID: 227764537166
-    ECR_REPO: brain-tasks-app
-    IMAGE_TAG: latest
+    AWS_REGION: ap-south-1
+    CLUSTER_NAME: brain-cluster
+    IMAGE_REPO_NAME: 227764537166.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app
 
 phases:
   pre_build:
     commands:
-      - echo Logging in to ECR...
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION |
-        docker login --username AWS --password-stdin \
-        227764537166.dkr.ecr.ap-south-1.amazonaws.com/brain-tasks-app
-      - echo Checking files...
-      - ls -la
+      - echo Logging in to ECR
+      - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 227764537166.dkr.ecr.ap-south-1.amazonaws.com
 
   build:
     commands:
-      - echo Building image...
-      - docker build -t $ECR_REPO:$IMAGE_TAG .
-
-      - docker tag $ECR_REPO:$IMAGE_TAG \
-        $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+      - echo Build Docker image
+      - docker build -t $IMAGE_REPO_NAME .
 
   post_build:
     commands:
-      - echo Pushing image...
-      - docker push \
-        $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+      - echo Push image
+      - docker push $IMAGE_REPO_NAME
+      - echo Update kubeconfig
+      - aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
+      - echo Deploy to EKS
+      - kubectl apply -f k8s/
+
+artifacts:
+  files: []
